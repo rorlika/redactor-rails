@@ -11,6 +11,7 @@ module RedactorRails
 
   module Backend
     autoload :CarrierWave, 'redactor-rails/backend/carrierwave'
+    autoload :ProcessFiles, 'redactor-rails/backend/process_files'
   end
   require 'redactor-rails/orm/base'
   require 'redactor-rails/orm/active_record'
