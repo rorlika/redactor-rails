@@ -8,20 +8,13 @@ class RedactorRails::PicturesController < ApplicationController
   end
 
   def create
-    @picture = RedactorRails.picture_model.new
+    processed_files = RedactorRails::Backend::ProcessFiles.new(
+      files: params[:file],
+      user: redactor_current_user
+    ).call
 
-    file = params[:file]
-    @picture.data = RedactorRails::Http.normalize_param(file, request)
-    if @picture.has_attribute?(:"#{RedactorRails.devise_user_key}")
-      @picture.send("#{RedactorRails.devise_user}=", redactor_current_user)
-      @picture.assetable = redactor_current_user
-    end
-
-    if @picture.save
-      render json: { filelink: @picture.url(:content) }
-    else
-      render json: { error: @picture.errors }
-    end
+    return render json: processed_files unless processed_files.key?('error')
+    render json: processed_files[:error]
   end
 
   private
