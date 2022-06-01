@@ -14,7 +14,7 @@
         {
             this.app = app;
             this.opts = app.opts;
-            this.lang = app.lang;alignment
+            this.lang = app.lang;
             this.block = app.block;
             this.toolbar = app.toolbar;
         },
