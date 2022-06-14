@@ -8,20 +8,13 @@ class RedactorRails::DocumentsController < ApplicationController
   end
 
   def create
-    @document = RedactorRails.document_model.new
+    processed_files = RedactorRails::Backend::ProcessFiles.new(
+      files: params[:file],
+      user: redactor_current_user
+    ).call
 
-    file = params[:file]
-    @document.data = RedactorRails::Http.normalize_param(file, request)
-    if @document.has_attribute?(:"#{RedactorRails.devise_user_key}")
-      @document.send("#{RedactorRails.devise_user}=", redactor_current_user)
-      @document.assetable = redactor_current_user
-    end
-
-    if @document.save
-      render json: { filelink: @document.url, filename: @document.filename }
-    else
-      render json: { error: @document.errors }
-    end
+    return render json: processed_files unless processed_files.key?('error')
+    render json: processed_files[:error]
   end
 
   private
