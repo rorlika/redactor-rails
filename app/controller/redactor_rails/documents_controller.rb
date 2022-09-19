@@ -10,7 +10,8 @@ class RedactorRails::DocumentsController < ApplicationController
   def create
     processed_files = RedactorRails::Backend::ProcessFiles.new(
       files: params[:file],
-      user: redactor_current_user
+      user: redactor_current_user,
+      type: RedactorRails::Document
     ).call
 
     return render json: processed_files unless processed_files.key?('error')
